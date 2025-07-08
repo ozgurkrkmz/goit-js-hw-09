@@ -1,26 +1,61 @@
-const form = document.querySelector('.feedback-form');
-form.addEventListener('input', e => {
-    // console.log(e.target.name);
-    // console.log(form.elements);
-    const email = form.elements.email.value.trim();
-    const message = form.elements.message.value.trim();
-    // console.log(email);
-    // console.log(message);
-    localStorage.setItem("feedback-form-state", JSON.stringify({ email, message }));
-});
+const formEl = document.querySelector('.feedback-form');
+const STORAGE_KEY = 'feedback-form-state';
 
-form.addEventListener('submit', e => {
-    e.preventDefault();
-    const email = form.elements.email.value;
-    const message = form.elements.message.value;
-    console.log({email, message});
-    form.reset();
-    localStorage.removeItem("feedback-form-state");
-});
+let formState = {
+  email: '',
+  message: '',
+};
 
-let data = localStorage.getItem("feedback-form-state");
-data = JSON.parse(data);
-if (data) {
-    form.elements.email.value = data.email;
-    form.elements.message.value = data.message;
- }
+const savedState = localStorage.getItem(STORAGE_KEY);
+
+if (savedState) {
+  const parsedState = JSON.parse(savedState);
+
+  
+  if (parsedState.email) {
+    formEl.elements.email.value = parsedState.email.trim();
+    formState.email = parsedState.email.trim();
+  }
+
+  if (parsedState.message) {
+    formEl.elements.message.value = parsedState.message.trim();
+    formState.message = parsedState.message.trim();
+  }
+}
+
+formEl.addEventListener('input', handleInput);
+formEl.addEventListener('submit', handleSubmit);
+
+function handleInput(evt) {
+  const field = evt.target.name;
+  const val = evt.target.value.trim();
+
+  formState[field] = val;
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(formState));
+}
+
+function handleSubmit(evt) {
+  evt.preventDefault();
+
+  const emailValue = formEl.elements.email.value.trim();
+  const messageValue = formEl.elements.message.value.trim();
+
+  if (emailValue === '' || messageValue === '') {
+    alert('Lütfen tüm alanları doldurun.');
+    return;
+  }
+
+  const result = {
+    email: emailValue,
+    message: messageValue,
+  };
+
+  console.log(result);
+
+  localStorage.removeItem(STORAGE_KEY);
+  formEl.reset();
+
+  formState.email = '';
+  formState.message = '';
+}

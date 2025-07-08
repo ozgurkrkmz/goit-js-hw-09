@@ -1,44 +1,119 @@
-// 🎯 Galerideki görseller başka bir dosyadan içe aktarılıyor – bu, resim koleksiyonunun geldiği yer
 import SimpleLightbox from "simplelightbox";
-import 'simplelightbox/dist/simple-lightbox.min.css';
-import { images } from "./03-images.js";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
-// 🖼️ Galeri alanı seçiliyor – sergi bu alana yerleştirilecek
-const gallery = document.querySelector(".gallery");
+const images = [
+  {
+    preview:
+      'https://cdn.pixabay.com/photo/2019/05/14/16/43/rchids-4202820__480.jpg',
+    original:
+      'https://cdn.pixabay.com/photo/2019/05/14/16/43/rchids-4202820_1280.jpg',
+    description: 'Hokkaido Flower',
+  },
+  {
+    preview:
+      'https://cdn.pixabay.com/photo/2019/05/14/22/05/container-4203677__340.jpg',
+    original:
+      'https://cdn.pixabay.com/photo/2019/05/14/22/05/container-4203677_1280.jpg',
+    description: 'Container Haulage Freight',
+  },
+  {
+    preview:
+      'https://cdn.pixabay.com/photo/2019/05/16/09/47/beach-4206785__340.jpg',
+    original:
+      'https://cdn.pixabay.com/photo/2019/05/16/09/47/beach-4206785_1280.jpg',
+    description: 'Aerial Beach View',
+  },
+  {
+    preview:
+      'https://cdn.pixabay.com/photo/2016/11/18/16/19/flowers-1835619__340.jpg',
+    original:
+      'https://cdn.pixabay.com/photo/2016/11/18/16/19/flowers-1835619_1280.jpg',
+    description: 'Flower Blooms',
+  },
+  {
+    preview:
+      'https://cdn.pixabay.com/photo/2018/09/13/10/36/mountains-3674334__340.jpg',
+    original:
+      'https://cdn.pixabay.com/photo/2018/09/13/10/36/mountains-3674334_1280.jpg',
+    description: 'Alpine Mountains',
+  },
+  {
+    preview:
+      'https://cdn.pixabay.com/photo/2019/05/16/23/04/landscape-4208571__340.jpg',
+    original:
+      'https://cdn.pixabay.com/photo/2019/05/16/23/04/landscape-4208571_1280.jpg',
+    description: 'Mountain Lake Sailing',
+  },
+  {
+    preview:
+      'https://cdn.pixabay.com/photo/2019/05/17/09/27/the-alps-4209272__340.jpg',
+    original:
+      'https://cdn.pixabay.com/photo/2019/05/17/09/27/the-alps-4209272_1280.jpg',
+    description: 'Alpine Spring Meadows',
+  },
+  {
+    preview:
+      'https://cdn.pixabay.com/photo/2019/05/16/21/10/landscape-4208255__340.jpg',
+    original:
+      'https://cdn.pixabay.com/photo/2019/05/16/21/10/landscape-4208255_1280.jpg',
+    description: 'Nature Landscape',
+  },
+  {
+    preview:
+      'https://cdn.pixabay.com/photo/2019/05/17/04/35/lighthouse-4208843__340.jpg',
+    original:
+      'https://cdn.pixabay.com/photo/2019/05/17/04/35/lighthouse-4208843_1280.jpg',
+    description: 'Lighthouse Coast Sea',
+  },
+];
 
-// 🧱 Her bir görsel için çerçeve hazırlanıyor – küçük görsel, büyük versiyona bağlı şekilde oluşturuluyor
-const galleryMarkup = images.map(({ preview, original, description }) => 
-    `<li class="gallery-item">
-        <a class="gallery-link" href="${original}">
-            <img class="gallery-image" src="${preview}" alt="${description}" data-source="${original}"/>
-        </a></li>`).join("");
 
-// 🎨 Hazırlanan çerçeveler galeriye yerleştiriliyor – HTML içerisine aktarım
-gallery.innerHTML = galleryMarkup;
+const gallery = document.querySelector('.gallery');
 
-// ✨ Galeriye ışıklı görüntüleme özelliği ekleniyor – açıklamalar alt metinden alınıyor, geçiş efektleri belirleniyor
-new SimpleLightbox('.gallery a', { captionsData: "alt", captionDelay: 250, download: "Click for Download", animationSpeed: 350, fadeSpeed: 1000 });
+gallery.innerHTML = images.map(({ preview, original, description }) =>
+  `<li class="gallery-item">
+      <a class="gallery-link" href="${original}">
+        <img
+          class="gallery-image"
+          src="${preview}"
+          data-source="${original}"
+          alt="${description}"
+        />
+      </a>
+  </li>`
+).join('');
 
-// 🎭 Aşağıdaki bölüm devre dışı – elle tetiklenen galeri açılımı burada tanımlı
-// gallery.addEventListener("click", (event) => { // 🖱️ Galeride bir öğeye tıklandığında tetiklenecek olaylar
-//     event.preventDefault(); // ⛔ Bağlantının varsayılan davranışı engelleniyor
-//     const target = event.target; // 🎯 Tıklanan hedef öğe seçiliyor
 
-//     if (target.nodeName !== "IMG") { // ❌ Tıklanan öğe bir görsel değilse, işlem iptal ediliyor
-//         return;
-//     }
 
-//     const largeImageURL = target.dataset.source; // 🔍 Tıklanan görselin büyük versiyonunun adresi alınıyor
+const lightbox = new SimpleLightbox('.gallery a', {
+  captions: true,
+  captionsData: 'alt',
+  captionPosition: 'bottom',
+  captionDelay: 250,
+});
 
-//     const instance = basicLightbox.create(`
-//         <img src="${largeImageURL}" width="800" height="600">
-//     `); // 🪄 Büyük görsel için özel bir pencere (modal) oluşturuluyor
+gallery.addEventListener('click', (e) => {
+  e.preventDefault();
 
-//     instance.show(); // 🌟 Oluşturulan pencere açılıyor ve görsel gösteriliyor
+  if (e.target.nodeName !== 'IMG') return;
+    const imageUrl = e.target.dataset.source;
+    const imageAlt = e.target.alt;
+    
+    const instance = basicLightbox.create(
+      `<img src="${imageUrl}" alt="${imageAlt}" width="800" height="600">`
+    );
 
-//     document.addEventListener("keydown", (event) => { // ⌨️ Klavyeden bir tuşa basıldığında kontrol ediliyor
-//         if (event.key === "Escape") { // 🔓 ESC tuşuna basılırsa modal pencere kapanıyor
-//             instance.close();
-//         }
-//     });
-// })
+  function onEscPress(e) {
+    if (e.key === 'Escape') {
+      instance.close();
+    }
+  }
+
+  instance.show();
+  document.addEventListener('keydown', onEscPress);
+
+  
+  instance.element().addEventListener('basiclightbox:close', () => {
+    document.removeEventListener('keydown', onEscPress);
+  });
+});
