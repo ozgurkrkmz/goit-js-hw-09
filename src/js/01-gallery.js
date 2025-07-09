@@ -1,5 +1,5 @@
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const images = [
   {
@@ -67,53 +67,30 @@ const images = [
   },
 ];
 
-
 const gallery = document.querySelector('.gallery');
 
-gallery.innerHTML = images.map(({ preview, original, description }) =>
-  `<li class="gallery-item">
-      <a class="gallery-link" href="${original}">
-        <img
-          class="gallery-image"
-          src="${preview}"
-          data-source="${original}"
-          alt="${description}"
-        />
-      </a>
-  </li>`
-).join('');
+// HTML oluşturma
+gallery.innerHTML = images
+  .map(
+    ({ preview, original, description }) => `
+      <li class="gallery-item">
+        <a class="gallery-link" href="${original}">
+          <img
+            class="gallery-image"
+            src="${preview}"
+            alt="${description}"
+          />
+        </a>
+      </li>
+    `
+  )
+  .join('');
 
-
-
-const lightbox = new SimpleLightbox('.gallery a', {
+let lightbox = new SimpleLightbox('.gallery a', {
   captions: true,
+  captionSelector: 'img',
+  captionType: 'attr',
   captionsData: 'alt',
   captionPosition: 'bottom',
   captionDelay: 250,
-});
-
-gallery.addEventListener('click', (e) => {
-  e.preventDefault();
-
-  if (e.target.nodeName !== 'IMG') return;
-    const imageUrl = e.target.dataset.source;
-    const imageAlt = e.target.alt;
-    
-    const instance = basicLightbox.create(
-      `<img src="${imageUrl}" alt="${imageAlt}" width="800" height="600">`
-    );
-
-  function onEscPress(e) {
-    if (e.key === 'Escape') {
-      instance.close();
-    }
-  }
-
-  instance.show();
-  document.addEventListener('keydown', onEscPress);
-
-  
-  instance.element().addEventListener('basiclightbox:close', () => {
-    document.removeEventListener('keydown', onEscPress);
-  });
 });
