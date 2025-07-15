@@ -1,4 +1,6 @@
+// Kullanılacak kısmın import edilmesi
 import SimpleLightbox from 'simplelightbox';
+// Ek stillerin eklenmesi
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const images = [
@@ -67,30 +69,32 @@ const images = [
   },
 ];
 
-const gallery = document.querySelector('.gallery');
+const galeri = document.querySelector('.gallery');
 
-// HTML oluşturma
-gallery.innerHTML = images
-  .map(
-    ({ preview, original, description }) => `
-      <li class="gallery-item">
-        <a class="gallery-link" href="${original}">
-          <img
-            class="gallery-image"
-            src="${preview}"
-            alt="${description}"
-          />
-        </a>
-      </li>
-    `
-  )
-  .join('');
+const modalInside = images.map(
+  ({ preview, original, description }) =>
+    `<li class="gallery-item">
+      <a class="gallery-link" href="${original}">
+        <img
+          class="gallery-image"
+          src="${preview}"
+          alt="${description}"
+        />
+      </a>
+    </li>`
+);
 
-let lightbox = new SimpleLightbox('.gallery a', {
-  captions: true,
-  captionSelector: 'img',
-  captionType: 'attr',
+const modalInsideBirlesik = modalInside.join('');
+console.log(modalInsideBirlesik);
+galeri.insertAdjacentHTML('beforeend', modalInsideBirlesik);
+
+const SLBGaleri = new SimpleLightbox('.gallery a', {
+  animationSlide: true,
   captionsData: 'alt',
   captionPosition: 'bottom',
+  loop: false,
+  preloading: true,
+  animationSpeed: 250,
+  fadeSpeed: 250,
   captionDelay: 250,
 });

@@ -1,40 +1,43 @@
-const form = document.querySelector('.feedback-form');
-let formData = { email: '', message: '' };
+const STATE_NAME = 'feedback-form-state';
 
-// Sayfa yüklendiğinde verileri kontrol et ve alanları doldur
-const savedData = localStorage.getItem('feedback-form-state');
-if (savedData) {
-  Object.assign(formData, JSON.parse(savedData));
-  if (form.elements.email) form.elements.email.value = formData.email || '';
-  if (form.elements.message)
-    form.elements.message.value = formData.message || '';
+const feedbackForm = document.querySelector('.feedback-form');
+const emailInput = document.querySelector('.email-input');
+const messageInput = document.querySelector('.message-input');
+
+const prevState = localStorage.getItem(STATE_NAME);
+if (prevState) {
+  const oncedenKalanlar = JSON.parse(prevState);
+  emailInput.value = oncedenKalanlar.email || '';
+  messageInput.value = oncedenKalanlar.message || '';
 }
 
-// Local Storage input event
-form.addEventListener('input', event => {
-  if (event.target.name === 'email') {
-    formData.email = form.elements.email.value.trim();
-  }
-  if (event.target.name === 'message') {
-    formData.message = form.elements.message.value.trim();
-  }
-  localStorage.setItem('feedback-form-state', JSON.stringify(formData));
+emailInput.addEventListener('input', () => {
+  const currentState = {
+    email: emailInput.value,
+    message: messageInput.value,
+  };
+  localStorage.setItem(STATE_NAME, JSON.stringify(currentState));
 });
 
-// Submit event
-form.addEventListener('submit', event => {
+messageInput.addEventListener('input', () => {
+  const currentState = {
+    email: emailInput.value,
+    message: messageInput.value,
+  };
+  localStorage.setItem(STATE_NAME, JSON.stringify(currentState));
+});
+
+feedbackForm.addEventListener('submit', event => {
   event.preventDefault();
-  if (
-    !form.elements.email.value.trim() ||
-    !form.elements.message.value.trim()
-  ) {
-    alert('Fill please all fields');
-    return;
+  if (emailInput.value === '' || messageInput.value === '') {
+    alert('⚠️ Boş form gönderilemez ⚠️');
+  } else {
+    console.log({
+      email: emailInput.value,
+      message: messageInput.value,
+    });
+    // ----------------------------
+    localStorage.removeItem(STATE_NAME);
+    feedbackForm.reset();
   }
-  // Gönderilen veriyi konsola yazdır
-  console.log(formData);
-  // localStorage'dan veriyi sil
-  localStorage.removeItem('feedback-form-state');
-  form.reset();
-  formData = { email: '', message: '' };
 });
